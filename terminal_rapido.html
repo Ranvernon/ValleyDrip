@@ -1,0 +1,178 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+  <meta charset="UTF-8">
+  <title>ValleyDrip Terminal</title>
+  <script type="module">
+    import { initializeApp } from 'https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js';
+    import { getAuth, onAuthStateChanged } from 'https://www.gstatic.com/firebasejs/10.12.0/firebase-auth.js';
+    import { getFirestore, doc, getDoc } from 'https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js';
+
+    const firebaseConfig = {
+      apiKey: "AIzaSyCkqtLRn_izeUpWxszzASVNO64JsIz6kIg",
+      authDomain: "valleydrip-97eef.firebaseapp.com",
+      projectId: "valleydrip-97eef",
+      storageBucket: "valleydrip-97eef.appspot.com",
+      messagingSenderId: "586033950290",
+      appId: "1:586033950290:web:f5a7277e2fea3ef666798b"
+    };
+
+    const app = initializeApp(firebaseConfig);
+    const auth = getAuth(app);
+    const db = getFirestore(app);
+
+    onAuthStateChanged(auth, async (user) => {
+      if (user) {
+        const docRef = doc(db, "usuarios", user.uid);
+        const docSnap = await getDoc(docRef);
+        if (docSnap.exists()) {
+          const data = docSnap.data();
+          const saudacoes = [
+            `DRIP> O sistema tentou te moldar.`,
+            `DRIP> Então você escreveu seu próprio código.`,
+            `DRIP> Seja bem-vindo(a), ${data.usuario} - ${data.designacao}`,
+            ""
+          ];
+          linhas.unshift(...saudacoes);
+        }
+      }
+    });
+  </script>
+  <style>
+    @import url('https://fonts.googleapis.com/css2?family=JetBrains+Mono&display=swap');
+
+    html, body {
+      margin: 0;
+      padding: 0;
+      background: black;
+      color: #00ff90;
+      font-family: 'JetBrains Mono', monospace;
+      overflow: hidden;
+      height: 100%;
+    }
+
+    .top-bar {
+      position: fixed;
+      top: 20px;
+      left: 50%;
+      transform: translateX(-50%);
+      z-index: 10;
+      text-align: center;
+      display: none;
+    }
+
+    .top-bar button {
+      background: transparent;
+      border: 2px solid #00ff90;
+      color: #00ff90;
+      padding: 10px 20px;
+      font-size: 14px;
+      cursor: pointer;
+      font-family: inherit;
+    }
+
+    .top-bar button:hover {
+      background: #00ff90;
+      color: black;
+    }
+
+    .top-bar select {
+      margin-top: 10px;
+      background: #111;
+      color: #00ff90;
+      padding: 6px 10px;
+      border: 1px solid #00ff90;
+      font-family: inherit;
+      display: none;
+    }
+
+    .terminal {
+      padding: 60px 40px;
+      white-space: pre-wrap;
+      line-height: 1.6;
+      font-size: 16px;
+      max-width: 900px;
+      margin: 100px auto;
+    }
+  </style>
+</head>
+<body>
+
+<div class="top-bar" id="topBar">
+  <button onclick="abrirOpcoes()">Selecionar Opção</button><br>
+  <select id="opcoes" onchange="opcaoSelecionada(this.value)">
+    <option value="">-- /comandos --</option>
+    <option value="drops">/drops</option>
+    <option value="whatsapp">/whatsapp</option>
+    <option value="nucleo">/nucleo</option>
+  </select>
+</div>
+
+<div class="terminal" id="terminal"></div>
+
+<script>
+  const terminal = document.getElementById("terminal");
+  const topBar = document.getElementById("topBar");
+  const selectBox = document.getElementById("opcoes");
+
+  const linhas = [
+    "valleydrip_core > inicializando...",
+    "usuário: mon.arch",
+    "creator: not_found",
+    "nível de acesso: root",
+    "rota: não conforme",
+    "",
+    "███│ DRIP.EXE executando",
+    "",
+    ">> autenticidade detectada.",
+    ">> carregando manifesto...",
+    "",
+    "isso não é uma marca.",
+    "é um ruído visual.",
+    "um erro proposital no padrão.",
+    "",
+    "aguardando comando..."
+  ];
+
+  let linha = 0;
+
+  function digitarLinha(texto, i = 0, callback) {
+    if (i < texto.length) {
+      terminal.innerHTML += texto.charAt(i);
+      setTimeout(() => digitarLinha(texto, i + 1, callback), 25);
+    } else {
+      terminal.innerHTML += '\n';
+      callback();
+    }
+  }
+
+  function iniciarTerminal() {
+    if (linha < linhas.length) {
+      digitarLinha(linhas[linha], 0, () => {
+        linha++;
+        setTimeout(iniciarTerminal, 150);
+      });
+    } else {
+      topBar.style.display = "block";
+    }
+  }
+
+  function abrirOpcoes() {
+    selectBox.style.display = "inline-block";
+  }
+
+  function opcaoSelecionada(valor) {
+    if (valor === "drops") {
+      window.location.href = "drops.html";
+    } else if (valor === "whatsapp") {
+      window.location.href = "https://wa.me/5599999999999";
+    } else if (valor === "nucleo") {
+      window.location.href = "nucleo.html";
+    }
+  }
+
+  iniciarTerminal();
+</script>
+
+</body>
+</html>

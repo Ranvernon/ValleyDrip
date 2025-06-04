@@ -1,0 +1,121 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+  <meta charset="UTF-8">
+  <title>Acesso | ValleyDrip</title>
+  <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono&display=swap" rel="stylesheet">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <style>
+    body {
+      background-color: #000;
+      color: #00ff90;
+      font-family: 'JetBrains Mono', monospace;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+      height: 100vh;
+      overflow: hidden;
+    }
+
+    #terminal {
+      font-size: 14px;
+      white-space: pre-line;
+      width: 90%;
+      max-width: 600px;
+      line-height: 1.6;
+      text-align: left;
+    }
+
+    #finalMessage {
+      margin-top: 30px;
+      text-align: center;
+      animation: pulse 1.5s infinite;
+    }
+
+    .impact {
+      font-size: 22px;
+      font-weight: bold;
+      text-shadow: 0 0 6px #00ff90, 0 0 14px #00ff90;
+    }
+
+    .cursor {
+      display: inline-block;
+      animation: blink 1s infinite;
+    }
+
+    @keyframes blink {
+      0%, 100% { opacity: 1; }
+      50% { opacity: 0; }
+    }
+
+    @keyframes pulse {
+      0%, 100% { opacity: 1; }
+      50% { opacity: 0.7; }
+    }
+  </style>
+</head>
+<body>
+  <audio id="bootSound" src="sfx-acesso.mp3" preload="auto"></audio>
+
+  <div id="terminal">
+    <span id="output"></span><span class="cursor">|</span>
+  </div>
+
+  <div id="finalMessage" style="display:none;">
+    <div class="impact">ACESSO LIBERADO</div>
+    <div class="impact">AGORA VOCÊ NÃO FAZ MAIS PARTE DO SISTEMA</div>
+  </div>
+
+  <script>
+    const linhas = [
+      "[dripvalleycore] inicializando...",
+      "[verificando credenciais...]",
+      "[Status: Autenticado]",
+      "[Acesso concedido]",
+      "[Redirecionando para terminal.valleydripcore...]"
+    ];
+
+    const output = document.getElementById("output");
+    const finalMessage = document.getElementById("finalMessage");
+    const bootSound = document.getElementById("bootSound");
+
+    let i = 0;
+
+    function digitarLinha() {
+      if (i < linhas.length) {
+        const linha = linhas[i];
+        let j = 0;
+
+        const intervalo = setInterval(() => {
+          if (j < linha.length) {
+            output.textContent += linha[j];
+            j++;
+          } else {
+            clearInterval(intervalo);
+            output.textContent += "\n";
+            i++;
+            setTimeout(digitarLinha, 400);
+          }
+        }, 30);
+      } else {
+        setTimeout(() => {
+          finalMessage.style.display = "block";
+        }, 2500);
+
+        setTimeout(() => {
+          window.location.href = "terminal_registro.html";
+        }, 6000);
+      }
+    }
+
+    window.onload = () => {
+      bootSound.play().catch(() => {
+        console.warn("Som bloqueado até interação do usuário");
+      });
+
+      digitarLinha();
+    };
+  </script>
+</body>
+</html>

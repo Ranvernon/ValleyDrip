@@ -1,0 +1,155 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Manifesto | ValleyDrip</title>
+  <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono&display=swap" rel="stylesheet" />
+  <style>
+    body {
+      margin: 0;
+      padding: 40px 20px;
+      background-color: #000;
+      color: #00ff90;
+      font-family: 'JetBrains Mono', monospace;
+      display: flex;
+      flex-direction: column;
+      justify-content: flex-start;
+      align-items: flex-start;
+      height: 100vh;
+      overflow-y: auto;
+    }
+
+    #terminal {
+      white-space: pre-wrap;
+      font-size: 14px;
+      line-height: 1.7;
+      max-width: 800px;
+    }
+
+    #input-line {
+      display: none;
+      margin-top: 10px;
+    }
+
+    input[type="text"] {
+      background: black;
+      color: #00ff90;
+      border: none;
+      outline: none;
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 14px;
+    }
+  </style>
+</head>
+<body>
+  <pre id="terminal"></pre>
+
+  <div id="input-line">
+    <span>▌</span>
+    <input type="text" id="userInput" autocomplete="off" autofocus />
+  </div>
+
+  <script>
+    const lines = [
+      "[DRIP.EXE] >> Manifesto interno carregado...",
+      "[DRIP.EXE] >> Este conteúdo não foi feito para o público. Foi feito para quem atravessou o sistema.",
+      "",
+      "┌──────────────────────────────────────────────────────────────┐",
+      "│                ⚠️  VOCÊ NÃO CHEGOU AQUI À TOA  ⚠️           │",
+      "└──────────────────────────────────────────────────────────────┘",
+      "",
+      "Você vive num mundo com um script pronto:",
+      "Acorda.",
+      "Produz.",
+      "Obedece.",
+      "Rola feed.",
+      "Compra status.",
+      "Repete.",
+      "",
+      "Até as marcas “diferentes” vendem a mesma coisa:",
+      "Um uniforme com outra estampa.",
+      "Um nome com outra pose.",
+      "",
+      "ValleyDrip não é isso.",
+      "ValleyDrip é o erro no código.",
+      "O ruído no som.",
+      "A falha que você sentia — mas nunca soube nomear.",
+      "",
+      "Não estamos aqui pra vender roupa.",
+      "Estamos aqui pra reprogramar percepção.",
+      "",
+      "⚠️ Você não precisa pertencer a um molde pra existir.",
+      "⚠️ Você não precisa seguir o caminho que te venderam como “liberdade”.",
+      "⚠️ Você não precisa fingir que não vê o sistema — só porque todos fingem.",
+      "",
+      "[DRIP.EXE] >> Se você chegou até aqui, é porque algo em você não aceita o comum.",
+      "",
+      "Isso aqui não é hype. É sintoma.",
+      "Não é produto. É mensagem.",
+      "",
+      "Vista-se como quem hackeia a própria narrativa.",
+      "A marca não é o fim. É o meio.",
+      "Você é o processo. A falha. A escolha.",
+      "",
+      "[DRIP.EXE] >> Você não é figurante.",
+      "[DRIP.EXE] >> Você é parte do colapso.",
+      "",
+      "▌Digite: NÚCLEO — para continuar.",
+      "▌Digite: DESCONECTAR — para encerrar sessão."
+    ];
+
+    const terminal = document.getElementById('terminal');
+    const inputLine = document.getElementById('input-line');
+    const input = document.getElementById('userInput');
+
+    let lineIndex = 0;
+    let charIndex = 0;
+
+    function typeNextChar() {
+      if (lineIndex < lines.length) {
+        const line = lines[lineIndex];
+        if (charIndex < line.length) {
+          terminal.innerHTML += line[charIndex];
+          charIndex++;
+          setTimeout(typeNextChar, 25); // Velocidade de digitação
+        } else {
+          terminal.innerHTML += '\n';
+          lineIndex++;
+          charIndex = 0;
+          setTimeout(typeNextChar, 120); // Pausa entre linhas
+        }
+      } else {
+        inputLine.style.display = 'block';
+        input.focus();
+      }
+      terminal.scrollTop = terminal.scrollHeight;
+    }
+
+    input.addEventListener('keydown', function(event) {
+      if (event.key === 'Enter') {
+        const command = input.value.trim().toLowerCase();
+        terminal.innerHTML += `▌${input.value}\n`;
+        if (command === 'núcleo' || command === 'nucleo') {
+          terminal.innerHTML += "[DRIP.EXE] >> Redirecionando para o núcleo do sistema...\n";
+          setTimeout(() => {
+            window.location.href = 'nucleo.html';
+          }, 3000);
+        } else if (command === 'desconectar') {
+          localStorage.setItem('ipAutorizado', 'negado');
+          terminal.innerHTML += "[DRIP.EXE] >> Sessão encerrada. Acesso bloqueado.\n";
+          setTimeout(() => {
+            window.location.href = '404.html';
+          }, 3000);
+        } else {
+          terminal.innerHTML += "[DRIP.EXE] >> Comando não reconhecido. Tente novamente.\n";
+        }
+        input.value = "";
+        terminal.scrollTop = terminal.scrollHeight;
+      }
+    });
+
+    typeNextChar();
+  </script>
+</body>
+</html>

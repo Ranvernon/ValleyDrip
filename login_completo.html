@@ -1,0 +1,192 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Login | ValleyDrip</title>
+  <link href="https://fonts.googleapis.com/css2?family=Share+Tech+Mono&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono&display=swap" rel="stylesheet">
+  <style>
+    body {
+      margin: 0;
+      background: black;
+      color: #00ff90;
+      font-family: 'JetBrains Mono', monospace;
+      height: 100vh;
+      overflow: hidden;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      position: relative;
+    }
+
+    canvas {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      z-index: -1;
+    }
+
+    form {
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+      width: 300px;
+      border: 1px solid #00ff90;
+      padding: 30px;
+      border-radius: 8px;
+      background: rgba(0, 0, 0, 0.85);
+      position: relative;
+      z-index: 1;
+      overflow: hidden;
+    }
+
+    form::before {
+      content: "";
+      position: absolute;
+      top: -100%;
+      left: 0;
+      width: 100%;
+      height: 200%;
+      background: linear-gradient(to bottom, transparent 0%, #00ff9055 50%, transparent 100%);
+      animation: scan-vertical 3.8s infinite alternate;
+      z-index: 0;
+    }
+
+    form * {
+      position: relative;
+      z-index: 1;
+    }
+
+    @keyframes scan-vertical {
+      0% { transform: translateY(-100%); }
+      100% { transform: translateY(100%); }
+    }
+
+    h3 {
+      margin-bottom: 10px;
+      font-family: 'Share Tech Mono', monospace;
+    }
+
+    input {
+      background: #000;
+      border: none;
+      border-bottom: 1px solid #00ff90;
+      color: #00ff90;
+      padding: 10px;
+      font-family: 'JetBrains Mono', monospace;
+    }
+
+    button {
+      background: transparent;
+      color: #00ff90;
+      padding: 10px;
+      cursor: pointer;
+      font-weight: bold;
+      border: 2px solid #00ff90;
+      transition: background 0.3s, color 0.3s;
+      font-family: 'Share Tech Mono', monospace;
+    }
+
+    button:hover {
+      background-color: #00ff90;
+      color: black;
+    }
+  </style>
+</head>
+<body>
+<canvas id="hexgrid"></canvas>
+
+<form id="loginForm">
+  <h3>login@valleydrip_core</h3>
+  <input type="email" id="email" placeholder="Email" required />
+  <input type="password" id="senha" placeholder="Senha" required />
+  <button type="submit">Acessar Terminal</button>
+</form>
+
+<script>
+  const canvas = document.getElementById("hexgrid");
+  const ctx = canvas.getContext("2d");
+  canvas.width = window.innerWidth;
+  canvas.height = window.innerHeight;
+
+  const hexRadius = 20;
+  const hexHeight = Math.sqrt(3) * hexRadius;
+  const cols = Math.ceil(canvas.width / (hexRadius * 1.5));
+  const rows = Math.ceil(canvas.height / hexHeight);
+  const hexes = [];
+
+  for (let row = 0; row < rows; row++) {
+    for (let col = 0; col < cols; col++) {
+      const x = col * hexRadius * 1.5;
+      const y = row * hexHeight + (col % 2) * (hexHeight / 2);
+      hexes.push({ x, y, active: Math.random() < 0.05 });
+    }
+  }
+
+  function drawHexagon(x, y, active) {
+    ctx.beginPath();
+    for (let i = 0; i < 6; i++) {
+      const angle = Math.PI / 3 * i;
+      const dx = x + hexRadius * Math.cos(angle);
+      const dy = y + hexRadius * Math.sin(angle);
+      if (i === 0) ctx.moveTo(dx, dy);
+      else ctx.lineTo(dx, dy);
+    }
+    ctx.closePath();
+    ctx.strokeStyle = active ? "#00ff90" : "#004d3d";
+    ctx.lineWidth = 1;
+    ctx.stroke();
+  }
+
+  function animateHexes() {
+    ctx.clearRect(0, 0, canvas.width, canvas.height);
+    hexes.forEach(hex => {
+      if (Math.random() < 0.005) hex.active = !hex.active;
+      drawHexagon(hex.x, hex.y, hex.active);
+    });
+    requestAnimationFrame(animateHexes);
+  }
+
+  animateHexes();
+</script>
+
+<script type="module">
+  import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js";
+  import { getAuth, signInWithEmailAndPassword } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-auth.js";
+
+  const firebaseConfig = {
+    apiKey: "AIzaSyCkqtLRn_izeUpWxszzASVNO64JsIz6kIg",
+    authDomain: "valleydrip-97eef.firebaseapp.com",
+    projectId: "valleydrip-97eef",
+    storageBucket: "valleydrip-97eef.appspot.com",
+    messagingSenderId: "586033950290",
+    appId: "1:586033950290:web:f5a7277e2fea3ef666798b"
+  };
+
+  const app = initializeApp(firebaseConfig);
+  const auth = getAuth(app);
+
+  document.getElementById("loginForm").addEventListener("submit", async (e) => {
+    e.preventDefault();
+    const email = document.getElementById("email").value;
+    const senha = document.getElementById("senha").value;
+
+    try {
+      const userCredential = await signInWithEmailAndPassword(auth, email, senha);
+      const user = userCredential.user;
+
+      if (user.emailVerified) {
+        window.location.href = "acesso.html";
+      } else {
+        alert("Email não verificado. Verifique antes de continuar.");
+      }
+    } catch (error) {
+      alert("Erro ao acessar: " + error.message);
+    }
+  });
+</script>
+</body>
+</html>

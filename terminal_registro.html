@@ -1,0 +1,173 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Terminal | ValleyDrip</title>
+  <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Share+Tech+Mono&display=swap" rel="stylesheet">
+  <style>
+    body {
+      margin: 0;
+      padding: 40px 20px;
+      background-color: #000;
+      color: #00ff90;
+      font-family: 'JetBrains Mono', monospace;
+      display: flex;
+      flex-direction: column;
+      justify-content: flex-start;
+      align-items: flex-start;
+      height: 100vh;
+      overflow-y: auto;
+    }
+
+    .linha {
+      white-space: pre-line;
+      text-align: left;
+      width: 100%;
+      max-width: 800px;
+      line-height: 1.7;
+      font-size: 14px;
+      margin-bottom: 5px;
+    }
+
+    .estrofe {
+      margin-bottom: 40px;
+    }
+
+    .botao {
+      font-family: 'Share Tech Mono', monospace;
+      font-size: 16px;
+      padding: 10px 20px;
+      color: #00ff90;
+      background: transparent;
+      border: 1px solid #00ff90;
+      cursor: pointer;
+      transition: 0.3s;
+      opacity: 0;
+      animation: fadeIn 1.5s ease-in forwards;
+      display: none;
+      margin-top: 10px;
+    }
+
+    .botao:hover {
+      background-color: #00ff90;
+      color: #000;
+    }
+
+    @keyframes fadeIn {
+      to {
+        opacity: 1;
+      }
+    }
+  </style>
+</head>
+<body>
+  <div id="terminal"></div>
+  <button id="lerManifesto" class="botao" onclick="window.location.href='manifesto.html'">LER MANIFESTO</button>
+
+  <script type="module">
+    import { initializeApp } from 'https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js';
+    import { getAuth, onAuthStateChanged } from 'https://www.gstatic.com/firebasejs/10.12.0/firebase-auth.js';
+    import { getFirestore, doc, getDoc } from 'https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js';
+
+    const firebaseConfig = {
+      apiKey: "AIzaSyCkqtLRn_izeUpWxszzASVNO64JsIz6kIg",
+      authDomain: "valleydrip-97eef.firebaseapp.com",
+      projectId: "valleydrip-97eef",
+      storageBucket: "valleydrip-97eef.appspot.com",
+      messagingSenderId: "586033950290",
+      appId: "1:586033950290:web:f5a7277e2fea3ef666798b"
+    };
+
+    const app = initializeApp(firebaseConfig);
+    const auth = getAuth(app);
+    const db = getFirestore(app);
+
+    const terminal = document.getElementById("terminal");
+    const btnManifesto = document.getElementById("lerManifesto");
+
+    onAuthStateChanged(auth, async (user) => {
+      if (user) {
+        const docRef = doc(db, "usuarios", user.uid);
+        const docSnap = await getDoc(docRef);
+
+        if (docSnap.exists()) {
+          const data = docSnap.data();
+          const nomeUsuario = data.usuario || "USUÁRIO_XXX";
+          const designacao = data.designacao || "DESCONHECIDO";
+
+          const estrofes = [
+            [
+              "[SISTEMA] >> Iniciando protocolo de autenticação...",
+              "[SISTEMA] >> Conectando ao Terminal...",
+              "[SISTEMA] >> Acesso autorizado."
+            ],
+            [
+              `[DRIP.EXE] >> Acesso concedido: ${nomeUsuario.toUpperCase()}`,
+              `[DRIP.EXE] >> Designação: ${designacao.toUpperCase()}`
+            ],
+            [
+              "[TERMINAL] >> Você entrou. Isso já te diferencia da maioria.",
+              "[TERMINAL] >> Mas ainda é cedo para dizer quem você é nesse sistema.",
+              "[TERMINAL] >> Avance. Leia o manifesto.",
+              "[TERMINAL] >> Depois decida: Volte para sua vida comum...",
+              "[TERMINAL] >> Ou mude sua percepção da realidade."
+            ]
+          ];
+
+          let blocoIndex = 0;
+
+          function digitarEstrofe(linhas, callback) {
+            const container = document.createElement("div");
+            container.className = "estrofe";
+            terminal.appendChild(container);
+
+            let linhaIndex = 0;
+
+            function digitarLinha() {
+              if (linhaIndex < linhas.length) {
+                const linha = document.createElement("div");
+                linha.className = "linha";
+                container.appendChild(linha);
+
+                let charIndex = 0;
+                const texto = linhas[linhaIndex];
+                const interval = setInterval(() => {
+                  if (charIndex < texto.length) {
+                    linha.textContent += texto[charIndex];
+                    charIndex++;
+                  } else {
+                    clearInterval(interval);
+                    linhaIndex++;
+                    setTimeout(digitarLinha, 300);
+                  }
+                }, 28);
+              } else {
+                callback();
+              }
+            }
+
+            digitarLinha();
+          }
+
+          function digitarProximaEstrofe() {
+            if (blocoIndex < estrofes.length) {
+              digitarEstrofe(estrofes[blocoIndex], () => {
+                blocoIndex++;
+                setTimeout(digitarProximaEstrofe, 400);
+              });
+            } else {
+              setTimeout(() => {
+                btnManifesto.style.display = "inline-block";
+              }, 500);
+            }
+          }
+
+          digitarProximaEstrofe();
+        }
+      }
+    });
+  </script>
+</body>
+</html>

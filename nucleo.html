@@ -1,0 +1,164 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <title>Núcleo | ValleyDrip</title>
+  <style>
+    body {
+      background-color: #000;
+      color: #00ff88;
+      font-family: 'JetBrains Mono', monospace;
+      margin: 0;
+      padding: 20px;
+      transition: opacity 3s ease;
+      box-sizing: border-box;
+    }
+    #terminal {
+      white-space: pre-wrap;
+      line-height: 1.6;
+      max-width: 100%;
+      overflow-wrap: break-word;
+    }
+    #input-line {
+      margin-top: 20px;
+    }
+    input {
+      background-color: black;
+      border: 1px solid #00ff88;
+      color: #00ff88;
+      font-family: 'JetBrains Mono', monospace;
+      padding: 5px;
+      font-size: 14px;
+      width: 100%;
+      box-sizing: border-box;
+    }
+    .cursor {
+      display: inline-block;
+      width: 10px;
+      background-color: #00ff88;
+      animation: blink 1s steps(1) infinite;
+    }
+    @keyframes blink {
+      0%, 50%, 100% { opacity: 1; }
+      25%, 75% { opacity: 0; }
+    }
+    #drip-message {
+      display: none;
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100vw;
+      height: 100vh;
+      background-color: black;
+      color: #00ff88;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      font-size: 18px;
+      text-align: center;
+      padding: 20px;
+      z-index: 9999;
+      opacity: 0;
+      transition: opacity 2s ease;
+      box-sizing: border-box;
+    }
+  </style>
+</head>
+<body>
+  <div id="terminal"></div>
+  <div id="input-line" style="display:none;">
+    ▌Digite DRIP para desbloquear seu IP: <input type="text" id="userInput" autofocus />
+  </div>
+  <div id="drip-message">Obrigado por ir até o fim. Por escutar. Por sentir. Você entendeu tudo. Isso não é só roupa. É alma. Bem-vindo à ValleyDrip.</div>
+
+  <script>
+    const lines = [
+      "> [DRIP.EXE] >> Núcleo interno acessado com sucesso...",
+      "> [DRIP.EXE] >> Esta é a origem.",
+      "",
+      "Tudo nasceu de um silêncio. Não de paz, mas de ausência.",
+      "Ausência de escuta. De espaço. De acolhimento.",
+      "A ValleyDrip não foi criada para impressionar. Foi criada por necessidade.",
+      "",
+      "O criador nunca se sentiu parte. Cresceu mais calado do que compreendido.",
+      "E foi nesse silêncio que ele construiu uma voz — não para se exibir, mas para alcançar.",
+      "",
+      "Essa marca não é sobre moda. É sobre presença.",
+      "Não é sobre estética. É sobre o sentimento de finalmente ser entendido.",
+      "",
+      "ValleyDrip é abrigo pra quem sempre ficou de fora.",
+      "É um erro no sistema — que funciona em quem vive fora dele.",
+      "",
+      "Se você já sentiu que não pertence, talvez pertença aqui.",
+      "Se o mundo te ignorou, aqui sua existência não passa despercebida.",
+      "",
+      "A roupa é só o fim de um propósito muito maior.",
+      "A gente não quer vender roupa. Quer mostrar que ninguém tá sozinho.",
+      "Que ainda existe lugar pra quem sente tudo. Pra quem só queria ser visto.",
+      "",
+      "Aqui, nada é exigido. Mas se algo te tocou...",
+      "Você sabe o que fazer.",
+      "",
+      ">> Digite DRIP para desbloquear seu IP."
+    ];
+
+    const terminal = document.getElementById('terminal');
+    const inputLine = document.getElementById('input-line');
+    const input = document.getElementById('userInput');
+    const dripMessage = document.getElementById('drip-message');
+
+    let lineIndex = 0;
+    let charIndex = 0;
+    let fullText = '';
+    let currentLine = '';
+
+    function typeChar() {
+      const current = lines[lineIndex];
+
+      if (charIndex < current.length) {
+        currentLine += current.charAt(charIndex);
+        terminal.innerHTML = fullText + currentLine + '<span class="cursor">_</span>';
+        charIndex++;
+        setTimeout(typeChar, 60);
+      } else {
+        fullText += currentLine + '\n';
+        terminal.innerHTML = fullText;
+        currentLine = '';
+        charIndex = 0;
+        lineIndex++;
+        if (lineIndex < lines.length) {
+          setTimeout(typeChar, 1000);
+        } else {
+          inputLine.style.display = 'block';
+          input.focus();
+        }
+      }
+    }
+
+    input.addEventListener('keydown', function(event) {
+      if (event.key === 'Enter') {
+        const command = input.value.trim().toLowerCase();
+        terminal.innerHTML += `\n▌${input.value}\n`;
+        if (command === 'drip') {
+          localStorage.setItem('ipAutorizado', 'true');
+          terminal.style.display = 'none';
+          inputLine.style.display = 'none';
+          dripMessage.style.display = 'flex';
+          setTimeout(() => {
+            dripMessage.style.opacity = 1;
+          }, 50);
+          setTimeout(() => {
+            window.location.href = '404.html';
+          }, 5500);
+        } else {
+          terminal.innerHTML += "[DRIP.EXE] >> Comando inválido. Tente: DRIP\n";
+        }
+        input.value = "";
+        terminal.scrollTop = terminal.scrollHeight;
+      }
+    });
+
+    typeChar();
+  </script>
+</body>
+</html>

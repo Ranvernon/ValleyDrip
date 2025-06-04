@@ -1,0 +1,122 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Entrada | ValleyDrip</title>
+  <link href="https://fonts.googleapis.com/css2?family=Share+Tech+Mono&display=swap" rel="stylesheet">
+  <style>
+    html, body {
+      margin: 0;
+      padding: 0;
+      width: 100%;
+      height: 100%;
+      background: black;
+      color: #00ff90;
+      font-family: 'Share Tech Mono', monospace;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      overflow: hidden;
+      flex-direction: column;
+    }
+
+    .terminal-wrapper {
+      max-width: 800px;
+      width: 90%;
+      padding: 20px;
+      box-sizing: border-box;
+    }
+
+    .terminal-content {
+      text-align: left;
+      white-space: pre-wrap;
+      font-size: clamp(14px, 3vw, 18px);
+      line-height: 1.6;
+      height: auto;
+      min-height: 260px;
+    }
+
+    .cursor::after {
+      content: '_';
+      animation: blink 1s infinite;
+      margin-left: 4px;
+    }
+
+    @keyframes blink {
+      0%, 100% { opacity: 0; }
+      50% { opacity: 1; }
+    }
+
+    .btn-link {
+      display: inline-block;
+      margin: 10px;
+      padding: 10px 20px;
+      border: 2px solid #00ff90;
+      color: #00ff90;
+      text-decoration: none;
+      font-family: 'Share Tech Mono', monospace;
+      transition: 0.2s;
+    }
+
+    .btn-link:hover {
+      background: rgba(0, 255, 144, 0.1);
+      text-shadow: 0 0 5px #00ff90;
+    }
+  </style>
+</head>
+<body>
+  <div class="terminal-wrapper">
+    <div class="terminal-content" id="terminal"></div>
+    <div id="buttons" style="display: none; text-align: center; margin-top: 20px;">
+      <a href="painel.html" class="btn-link">TerminalSystem</a>
+      <a href="login_ip.html" class="btn-link">IP REGISTRADO</a>
+    </div>
+  </div>
+
+  <audio id="typeSound" src="assets/sounds/type.mp3" preload="auto"></audio>
+
+  <script>
+    const lines = [
+      '> Identidade em leitura...',
+      '> Dados desconhecidos detectados.',
+      'Entrada cruzando camada de segurança.',
+      'Protocolo DRIP injetado com sucesso.',
+      'Análise concluída.',
+      'Qual caminho você escolhe?'
+    ];
+
+    const terminal = document.getElementById('terminal');
+    const buttons = document.getElementById('buttons');
+    const typeSound = document.getElementById('typeSound');
+    let i = 0;
+
+    function typeLine() {
+      if (i >= lines.length) {
+        buttons.style.display = 'block';
+        return;
+      }
+      const p = document.createElement('p');
+      p.classList.add('cursor');
+      terminal.appendChild(p);
+      let j = 0;
+      const line = lines[i];
+      const typing = setInterval(() => {
+        if (j < line.length) {
+          p.textContent += line[j];
+          j++;
+          typeSound.currentTime = 0;
+          typeSound.play().catch(() => {});
+        } else {
+          clearInterval(typing);
+          p.classList.remove('cursor');
+          i++;
+          setTimeout(typeLine, 400);
+        }
+      }, 30);
+    }
+
+    typeLine();
+  </script>
+</body>
+</html>

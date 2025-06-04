@@ -1,0 +1,74 @@
+<!DOCTYPE html> 
+<html lang="pt-br">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Terminal Oculto - ValleyDrip</title>
+  <style>
+    body {
+      background-color: #000;
+      color: #0f0;
+      font-family: 'JetBrains Mono', monospace;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      height: 100vh;
+      margin: 0;
+    }
+    .terminal {
+      max-width: 700px;
+      width: 100%;
+    }
+    input {
+      width: 100%;
+      padding: 10px;
+      background-color: #000;
+      border: 1px solid #0f0;
+      color: #0f0;
+      font-family: inherit;
+      font-size: 16px;
+      margin-top: 10px;
+    }
+    .output {
+      margin-top: 20px;
+      white-space: pre-wrap;
+      opacity: 1;
+      transition: opacity 1s ease;
+      height: 4.5em; /* reserve space so layout doesn't jump */
+    }
+  </style>
+</head>
+<body>
+  <div class="terminal">
+    <div>&gt; ACESSO AO SISTEMA SECRETO VALLEYDRIP</div>
+    <div>&gt; Insira seu código de acesso abaixo:</div>
+    <input type="text" id="codigo" placeholder="EX: DRP-4X7-Z9T" autocomplete="off" autocorrect="off" autocapitalize="characters" spellcheck="false" />
+    <div class="output" id="output"></div>
+  </div>
+
+  <script>
+    const codigosValidos = [
+      'VRX-79A-14', 'LNX-10C-22', 'SYS-33Z-88', 'DRP-21F-09',
+      'CMD-71T-02', 'HCK-48E-50', 'ERR-99D-31', 'FLW-63M-17',
+      'NTW-12V-85', 'ZRO-04K-70', 'GLT-23U-48', 'DNM-11P-67',
+      'XDC-90L-36', 'TRC-66B-29', 'BLK-55N-03', 'QRT-40H-12',
+      'SNK-83J-05', 'VLY-17S-99'
+    ];
+
+    const input = document.getElementById('codigo');
+    const output = document.getElementById('output');
+    let fadeTimeout;
+
+    input.addEventListener('keydown', function(e) {
+      if (e.key === 'Enter') {
+        clearTimeout(fadeTimeout);
+        const codigo = input.value.trim().toUpperCase();
+        if (codigosValidos.includes(codigo)) {
+          output.style.opacity = '1';
+          output.innerText = '[DRIP.EXE] >> CÓDIGO AUTÊNTICO DETECTADO.\nRedirecionando...';
+          setTimeout(() => {
+            window.location.href = 'nucleo-oculto.html';
+          }, 1500);
+        } else {
+          output.style.opacity = '1';
+          output.innerText = '[DRIP.EXE] >> ACESSO NEGADO.\nCÓDIGO INV

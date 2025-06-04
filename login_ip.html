@@ -1,0 +1,218 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Login | ValleyDrip</title>
+  <link href="https://fonts.googleapis.com/css2?family=Share+Tech+Mono&display=swap" rel="stylesheet">
+  <style>
+    body {
+      margin: 0;
+      background: black;
+      color: #00ff90;
+      font-family: 'Share Tech Mono', monospace;
+      height: 100vh;
+      overflow: hidden;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      position: relative;
+    }
+
+    canvas {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      z-index: -1;
+    }
+
+    form {
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+      width: 300px;
+      border: 1px solid #00ff90;
+      padding: 30px;
+      border-radius: 8px;
+      background: rgba(0, 0, 0, 0.85);
+      position: relative;
+      overflow: hidden;
+      z-index: 2;
+    }
+
+    form::before {
+      content: "";
+      position: absolute;
+      top: -100%;
+      left: 0;
+      width: 100%;
+      height: 200%;
+      background: linear-gradient(to bottom, transparent 0%, #00ff9055 50%, transparent 100%);
+      animation: scan-vertical 3.8s infinite alternate;
+      z-index: 1;
+    }
+
+    form * {
+      position: relative;
+      z-index: 2;
+    }
+
+    @keyframes scan-vertical {
+      0% { transform: translateY(-100%); }
+      100% { transform: translateY(100%); }
+    }
+
+    form h2 {
+      margin: 0 0 10px;
+    }
+
+    input {
+      background: #000;
+      border: none;
+      border-bottom: 1px solid #00ff90;
+      color: #00ff90;
+      padding: 10px;
+    }
+
+    .char-counter {
+      font-size: 12px;
+      color: #00ff90;
+      text-align: right;
+      margin-top: -10px;
+      margin-bottom: 5px;
+    }
+
+    button {
+      background: transparent;
+      color: #00ff90;
+      padding: 10px;
+      cursor: pointer;
+      font-weight: bold;
+      border: 2px solid #00ff90;
+      transition: background 0.3s, color 0.3s;
+    }
+
+    button:hover {
+      background-color: #00ff90;
+      color: black;
+    }
+
+    a {
+      color: #00ff90;
+      text-align: center;
+      font-size: 14px;
+      text-decoration: none;
+    }
+
+    #statusMessage {
+      text-align: center;
+      font-size: 13px;
+      margin-top: 6px;
+      color: #00ff90;
+    }
+
+    #esqueceuSenha {
+      display: none;
+    }
+
+    #dripBlock {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100vw;
+      height: 100vh;
+      background: black;
+      color: #00ff90;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      font-size: 18px;
+      padding: 20px;
+      z-index: 20;
+      text-align: center;
+      opacity: 0;
+      transition: opacity 2s ease;
+      pointer-events: none;
+    }
+  </style>
+</head>
+<body>
+  <canvas id="hexgrid"></canvas>
+  <div id="dripBlock">[DRIP.EXE] >> Você atravessou o sistema, mas hesitou no limiar.<br>[DRIP.EXE] >> O núcleo era o seu reflexo. Você desviou o olhar.<br>[DRIP.EXE] >> O Terminal não aceita pressa. Nem disfarce.<br>[DRIP.EXE] >> Acesso negado.</div>
+
+  <form id="loginForm">
+    <h2>login@valleydripcore</h2>
+    <input type="email" id="email" placeholder="Email" required />
+    <input type="password" id="senha" placeholder="Senha" required />
+    <div class="char-counter">* mínimo de 6 caracteres</div>
+    <p id="statusMessage"></p>
+    <button type="submit" id="btnLogin">Acessar</button>
+    <a href="#" id="esqueceuSenha">Esqueceu a senha?</a>
+  </form>
+
+  <script>
+    const acesso = localStorage.getItem("ipAutorizado");
+    if (acesso !== "true") {
+      const dripBlock = document.getElementById('dripBlock');
+      const form = document.getElementById('loginForm');
+      form.style.pointerEvents = 'none';
+      dripBlock.style.pointerEvents = 'auto';
+      dripBlock.style.opacity = 1;
+      setTimeout(() => {
+        dripBlock.innerHTML += "<br><br>[DRIP.EXE] >> Redirecionando para TerminalSystem...";
+        setTimeout(() => {
+          window.location.href = '404.html';
+        }, 4000);
+      }, 3500);
+    }
+
+    const canvas = document.getElementById("hexgrid");
+    const ctx = canvas?.getContext("2d");
+    if (canvas) {
+      canvas.width = window.innerWidth;
+      canvas.height = window.innerHeight;
+      const hexRadius = 20;
+      const hexHeight = Math.sqrt(3) * hexRadius;
+      const cols = Math.ceil(canvas.width / (hexRadius * 1.5));
+      const rows = Math.ceil(canvas.height / hexHeight);
+      const hexes = [];
+
+      for (let row = 0; row < rows; row++) {
+        for (let col = 0; col < cols; col++) {
+          const x = col * hexRadius * 1.5;
+          const y = row * hexHeight + (col % 2) * (hexHeight / 2);
+          hexes.push({ x, y, active: Math.random() < 0.05 });
+        }
+      }
+
+      function drawHexagon(x, y, active) {
+        ctx.beginPath();
+        for (let i = 0; i < 6; i++) {
+          const angle = Math.PI / 3 * i;
+          const dx = x + hexRadius * Math.cos(angle);
+          const dy = y + hexRadius * Math.sin(angle);
+          if (i === 0) ctx.moveTo(dx, dy);
+          else ctx.lineTo(dx, dy);
+        }
+        ctx.closePath();
+        ctx.strokeStyle = active ? "#00ff90" : "#004d3d";
+        ctx.lineWidth = 1;
+        ctx.stroke();
+      }
+
+      function animateHexes() {
+        ctx.clearRect(0, 0, canvas.width, canvas.height);
+        hexes.forEach(hex => {
+          if (Math.random() < 0.005) hex.active = !hex.active;
+          drawHexagon(hex.x, hex.y, hex.active);
+        });
+        requestAnimationFrame(animateHexes);
+      }
+
+      animateHexes();
+    }
+  </script>
+</body>
+</html>

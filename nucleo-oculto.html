@@ -1,0 +1,125 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>ValleyDrip // Núcleo</title>
+  <link href="https://fonts.googleapis.com/css2?family=Share+Tech+Mono&display=swap" rel="stylesheet">
+  <style>
+    body {
+      margin: 0;
+      background: black;
+      color: #00ff90;
+      font-family: 'Share Tech Mono', monospace;
+      padding: 20px;
+      overflow-x: hidden;
+      white-space: pre-wrap;
+      transition: opacity 2s ease;
+    }
+    #terminal {
+      max-width: 1000px;
+      margin: 0 auto;
+      font-size: 16px;
+      line-height: 1.6;
+    }
+    .cursor {
+      display: inline-block;
+      width: 10px;
+      background-color: #00ff90;
+      animation: blink 1s steps(2, start) infinite;
+    }
+    @keyframes blink {
+      to {
+        visibility: hidden;
+      }
+    }
+    #encerrar {
+      display: block;
+      margin: 40px auto 0;
+      background: none;
+      color: #00ff90;
+      border: 1px solid #00ff90;
+      padding: 10px 20px;
+      font-size: 16px;
+      font-family: 'Share Tech Mono', monospace;
+      cursor: pointer;
+      opacity: 0;
+      transition: opacity 1s ease;
+    }
+    #encerrar:hover {
+      background: #00ff90;
+      color: black;
+    }
+  </style>
+</head>
+<body>
+  <audio id="glitchSound" src="https://cdn.pixabay.com/download/audio/2023/03/16/audio_3efc30e52d.mp3?filename=glitch-5-188107.mp3"></audio>
+  <div id="terminal"></div>
+  <button id="encerrar" onclick="encerrarTerminal()">Encerrar Terminal</button>
+  <script>
+    const manifesto = `[DRIP.EXE] >> Acesso concedido.
+[CRIADOR.LOG] >> Abrindo núcleo oculto...
+
+Nunca foi só sobre lançar roupa.
+Foi sobre fazer alguém sentir: "alguém no mundo pensa como eu".
+
+Começar com propósito é difícil.
+Principalmente quando ninguém tá vendo.
+Mas cada peça é um fragmento do que a gente nunca disse em voz alta.
+
+A Valley não quer vender estampa.
+Quer que você se veja no tecido.
+
+Outras marcas começaram com discurso.
+Hoje vendem pro hype, esqueceram do porquê.
+Mas aqui, a visão continua intacta.
+
+Os drops são ataques.
+Base.exe é sobrevivência.
+
+Você não comprou uma peça. Você acessou um código.
+Um manifesto costurado por quem carrega peso, silêncio, e memória.
+
+ValleyDrip não quer ser tendência.
+Quer ser presença.
+
+E se o que você viveu encontrou espaço aqui…
+então a falha foi bem executada.
+
+[DRIP.EXE] >> Sessão rodando em plano de fundo.
+[DRIP.EXE] >> Pressione ENCERRAR para finalizar ou compartilhe a falha.`;
+
+    const terminal = document.getElementById('terminal');
+    const btn = document.getElementById('encerrar');
+    const glitchSound = document.getElementById('glitchSound');
+    let index = 0;
+
+    function typeLine() {
+      if (index < manifesto.length) {
+        terminal.innerHTML += manifesto[index++] === '\n' ? '<br>' : manifesto[index - 1];
+        const rect = terminal.getBoundingClientRect();
+        if (rect.bottom > window.innerHeight) {
+          window.scrollTo({ top: document.body.scrollHeight, behavior: 'smooth' });
+        }
+        setTimeout(typeLine, 35);
+      } else {
+        const cursor = document.createElement('span');
+        cursor.classList.add('cursor');
+        terminal.appendChild(cursor);
+        btn.style.opacity = 1;
+      }
+    }
+
+    function encerrarTerminal() {
+      glitchSound.play();
+      document.body.style.opacity = 0;
+      setTimeout(() => {
+        document.body.innerHTML = '<div style="text-align:center; margin-top: 40vh; font-size: 18px; color: #00ff90;">[DRIP.EXE] >> Sessão encerrada com sucesso.<br><br>Você vestiu mais que uma peça.<br>Vestiu um grito silencioso.<br><br>Compartilhe com quem ainda vive calado.<br><br>Feche a aba quando estiver pronto.</div>';
+        document.body.style.opacity = 1;
+      }, 2000);
+    }
+
+    typeLine();
+  </script>
+</body>
+</html>

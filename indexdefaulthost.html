@@ -1,0 +1,140 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+  <meta charset="UTF-8">
+  <title>Sistema DEFAULT HOST</title>
+  <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono&display=swap" rel="stylesheet">
+  <style>
+    body {
+      background-color: #000;
+      color: #00ff90;
+      font-family: 'JetBrains Mono', monospace;
+      margin: 0;
+      padding: 40px;
+      white-space: pre-wrap;
+      line-height: 1.6;
+      font-size: 15px;
+    }
+
+    #terminal {
+      max-width: 900px;
+      margin: 0 auto;
+    }
+
+    .cursor {
+      display: inline-block;
+      color: #ffffff;
+      font-weight: bold;
+      animation: blink 1s step-end infinite;
+    }
+
+    @keyframes blink {
+      from, to { opacity: 1; }
+      50% { opacity: 0; }
+    }
+  </style>
+</head>
+<body>
+  <div id="terminal"></div>
+
+  <script>
+    const terminal = document.getElementById('terminal');
+    const linhas = [
+      "mon.arch@drip_core:~$ injetar --plugin DRIP.EXE",
+      ">> Plugin detectado: DRIP.EXE",
+      ">> Tentativa de rollback detectada...",
+      ">> COMANDO: ROLLBACK NEGADO.",
+      ">> Sistema DEFAULT HOST continua em execução.",
+      "",
+      "SISTEMA DEFAULT HOST ── INICIALIZANDO...",
+      "",
+      "PROTOCOLO: VIDA PROGRAMADA",
+      "CLASSE IDENTIFICADA: MÉDIA",
+      "",
+      "[+] Nascer com plano de saúde básico",
+      "[+] Estudar em escolas regulares",
+      "[+] Pressão por desempenho médio",
+      "[+] Escolha de faculdade padrão",
+      "[+] Buscar estabilidade como prioridade",
+      "[+] Obter emprego. Não realização.",
+      "[+] Construir família por obrigação social",
+      "[+] Viver no limite entre o conforto e o medo do fracasso",
+      "[+] Falecer com currículo completo e sonhos arquivados.",
+      "",
+      "STATUS: PADRÃO DE CONDUTA CARREGADO",
+      "BANCOS DE DADOS: LIMITADOS À REALIDADE LOCAL",
+      "--------------------------------------------------",
+      "CLASSE IDENTIFICADA: BAIXA",
+      "",
+      "[+] Nascer em ambiente vulnerável",
+      "[+] Acesso desigual ao ensino",
+      "[+] Sistema ignora potencial. Classificação: descartável.",
+      "[+] Busca por emprego com CEP bloqueado",
+      "[+] Salário mínimo. Voz mínima. Direitos mínimos.",
+      "[+] Comer quando possível. Viver quando dá.",
+      "[+] Morrer cansado, sem reconhecimento.",
+      "",
+      "STATUS: DIFICULDADE ESTRUTURAL ATIVADA",
+      "BANCOS DE DADOS: FALTA DE PERSPECTIVA",
+      "--------------------------------------------------",
+      "CLASSE IDENTIFICADA: PAUPÉRRIMA",
+      "",
+      "[+] Nascer invisível ao sistema",
+      "[+] Sem acesso à educação. Sem chance de mudança",
+      "[+] Prioridade: Sobrevivência",
+      "[+] Fome como rotina. Violência como vizinha.",
+      "[+] Trabalhar desde cedo ou ser descartado",
+      "[+] Expectativa de vida: reduzida. Esperança: zerada.",
+      "[+] Morrer tentando. Se possível.",
+      "",
+      "STATUS: EXTREMO",
+      "BANCOS DE DADOS: SISTEMA NEGA EXISTÊNCIA",
+      "--------------------------------------------------",
+      "CLASSE IDENTIFICADA: ALTA",
+      "",
+      "[+] Nascer com vantagem no carregamento",
+      "[+] Escolas de elite, portas abertas",
+      "[+] Faculdades internacionais. Oportunidades ilimitadas",
+      "[+] Tempo para criar. Tempo para errar.",
+      "[+] Empregos herdados. Renda multiplicada",
+      "[+] Liberdade garantida por capital",
+      "[+] Viver sem se preocupar. Morrer com herdeiros prontos",
+      "",
+      "STATUS: ACESSO PRIORITÁRIO",
+      "BANCOS DE DADOS: ILIMITADOS",
+      "--------------------------------------------------",
+      "> SISTEMA DE CLASSES CARREGADO.",
+      "> LIBERDADE: APENAS PARA ALGUNS.",
+      "> PENSAMENTO PRÓPRIO: BLOQUEADO POR PADRÃO.",
+      "> COMANDOS MANUAIS DESABILITADOS.",
+      "",
+      "mon.arch@drip_core:~$ // questionar o sistema?",
+      "ERRO: PERMISSÃO NEGADA."
+    ];
+
+    let linhaAtual = 0;
+    let charAtual = 0;
+    let conteudo = "";
+
+    function digitar() {
+      if (linhaAtual < linhas.length) {
+        if (charAtual < linhas[linhaAtual].length) {
+          conteudo += linhas[linhaAtual].charAt(charAtual);
+          terminal.innerHTML = conteudo + '<span class="cursor">|</span>';
+          charAtual++;
+          setTimeout(digitar, 25); // mais lento agora
+        } else {
+          conteudo += '\n';
+          linhaAtual++;
+          charAtual = 0;
+          setTimeout(digitar, 280); // pausa entre linhas
+        }
+      } else {
+        terminal.innerHTML = conteudo; // remove cursor após tudo
+      }
+    }
+
+    digitar();
+  </script>
+</body>
+</html>
